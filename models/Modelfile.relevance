@@ -1,0 +1,74 @@
+# Built with Qwen — praxis/relevance-3b is a derivative fine-tune of Qwen2.5-3B-Instruct.
+# Qwen is licensed under the Qwen RESEARCH LICENSE AGREEMENT,
+# Copyright (c) Alibaba Cloud. All Rights Reserved.
+# https://huggingface.co/Qwen/Qwen2.5-3B-Instruct/blob/main/LICENSE
+#
+# Download the GGUF file from HuggingFace before running:
+#   huggingface-cli download praxis-nation/relevance-3b relevance-3b-q4_k_m.gguf \
+#       --local-dir models/
+# Then build the Ollama model:
+#   ollama create praxis/relevance-3b -f models/Modelfile.relevance
+
+FROM ./relevance-3b-q4_k_m.gguf
+
+# Relevance judge (keep vs scrub). The safetensors import drops the chat template
+# (sets TEMPLATE {{ .Prompt }}), so we restore the canonical Qwen2.5 template here —
+# the model sees no <|im_start|> structure and emits garbage without it.
+# SYSTEM is byte-identical to build_relevance_data.SYSTEM (train==serve);
+# the pipeline passes the per-message user turn.
+TEMPLATE """{{- if .Messages }}
+{{- if or .System .Tools }}<|im_start|>system
+{{- if .System }}
+{{ .System }}
+{{- end }}
+{{- if .Tools }}
+
+# Tools
+
+You may call one or more functions to assist with the user query.
+
+You are provided with function signatures within <tools></tools> XML tags:
+<tools>
+{{- range .Tools }}
+{"type": "function", "function": {{ .Function }}}
+{{- end }}
+</tools>
+
+For each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:
+<tool_call>
+{"name": <function-name>, "arguments": <args-json-object>}
+</tool_call>
+{{- end }}<|im_end|>
+{{ end }}
+{{- range $i, $_ := .Messages }}
+{{- $last := eq (len (slice $.Messages $i)) 1 -}}
+{{- if eq .Role "user" }}<|im_start|>user
+{{ .Content }}<|im_end|>
+{{ else if eq .Role "assistant" }}<|im_start|>assistant
+{{ if .Content }}{{ .Content }}
+{{- else if .ToolCalls }}<tool_call>
+{{ range .ToolCalls }}{"name": "{{ .Function.Name }}", "arguments": {{ .Function.Arguments }}}
+{{ end }}</tool_call>
+{{- end }}{{ if not $last }}<|im_end|>
+{{ end }}
+{{- else if eq .Role "tool" }}<|im_start|>user
+<tool_response>
+{{ .Content }}
+</tool_response><|im_end|>
+{{ end }}
+{{- if and (ne .Role "assistant") $last }}<|im_start|>assistant
+{{ end }}
+{{- end }}
+{{- else }}
+{{- if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}{{ if .Prompt }}<|im_start|>user
+{{ .Prompt }}<|im_end|>
+{{ end }}<|im_start|>assistant
+{{ end }}{{ .Response }}{{ if .Response }}<|im_end|>{{ end }}"""
+
+SYSTEM """You decide which personal details in a message are NEEDED to answer the user's question well. A detail is RELEVANT only if answering the question genuinely depends on that specific detail (e.g. a location when the answer depends on local law or availability). It is NOT relevant if it is incidental background the answer does not need."""
+
+PARAMETER temperature 0
+PARAMETER stop "<|im_start|>"
+PARAMETER stop "<|im_end|>"

@@ -1,0 +1,52 @@
+Cloak — Open-Source Release
+Copyright (c) 2026 Praxis
+
+This product includes software developed by Praxis (https://praxisnation.org).
+
+---
+
+SOURCE CODE LICENSE
+-------------------
+The source code in this repository is licensed under the MIT License.
+See the LICENSE file at the root of this repository.
+
+
+MODEL ARTIFACT LICENSE
+----------------------
+The model artifacts distributed alongside this repository — including GGUF
+quantization files, safetensors weight files, and LoRA adapter weights for
+praxis/spanfinder-3b and praxis/relevance-3b — are NOT MIT-licensed.
+
+These model artifacts are derivative works of Qwen/Qwen2.5-3B-Instruct and
+are distributed under the Qwen Research License Agreement (non-commercial).
+
+  Qwen is licensed under the Qwen RESEARCH LICENSE AGREEMENT,
+  Copyright (c) Alibaba Cloud. All Rights Reserved.
+  https://huggingface.co/Qwen/Qwen2.5-3B-Instruct/blob/main/LICENSE
+
+Key restriction: model artifacts may be used for research or evaluation
+purposes only. Commercial use requires a separate written license from
+Alibaba Cloud.
+
+Built with Qwen — praxis/spanfinder-3b and praxis/relevance-3b are
+fine-tuned derivatives of Qwen2.5-3B-Instruct (Alibaba Cloud).
+
+
+THIRD-PARTY DATASET ATTRIBUTION
+---------------------------------
+The praxis/relevance-3b model was trained in part on the CAPID dataset:
+
+  CAPID — Context-Aware PII Detection
+  MIT License
+  Copyright (c) MariaPonomarenko38 and contributors
+  https://github.com/MariaPonomarenko38/CAPID
+
+The CAPID dataset is used under its MIT license. Attribution is required
+by that license and is provided here and in models/LICENSE_AND_ATTRIBUTION.md.
+
+
+TRAINING DATA
+-------------
+The praxis/spanfinder-3b model was trained on a private dataset containing
+real PII. That training data is not published. Only the trained model weights
+are distributed.

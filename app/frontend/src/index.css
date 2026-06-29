@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+/* Design tokens — a calm, premium dark palette. Semantic vars in :root, mapped to
+   Tailwind utilities via @theme inline so components use bg-surface / text-muted /
+   border-border / text-accent / text-protected, etc. */
+:root {
+  /* Neutral greyscale accent — primary actions are near-white on the dark background.
+     Swap this one token to retint the whole UI. */
+  --brand: #f5f7fa;
+  --background: #0d0f13;
+  --surface: #14171d;      /* panels, assistant bubbles */
+  --surface-2: #1b2027;    /* inputs, user bubbles */
+  --border: #262c36;
+  --foreground: #e7eaf0;
+  --muted: #939dad;
+  --accent: var(--brand);  /* primary actions */
+  --accent-foreground: #0d0f13;  /* dark text on the light accent */
+  --protected: #35d39a;    /* the "protected / scrubbed" semantic */
+  --protected-foreground: #052016;
+  --danger: #f7768e;
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-protected: var(--protected);
+  --color-protected-foreground: var(--protected-foreground);
+  --color-danger: var(--danger);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 0.25rem);
+  --radius-sm: calc(var(--radius) - 0.4rem);
+
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Monaco, "Cascadia Code", monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 35%, transparent);
+}
+
+/* Markdown rendering for assistant replies. Scoped to .gk-markdown so it never leaks
+   into the rest of the UI. Uses the design tokens above; tuned for a chat reply (compact
+   vertical rhythm, readable code). */
+.gk-markdown {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.gk-markdown > :first-child {
+  margin-top: 0;
+}
+.gk-markdown > :last-child {
+  margin-bottom: 0;
+}
+.gk-markdown p,
+.gk-markdown ul,
+.gk-markdown ol,
+.gk-markdown blockquote,
+.gk-markdown pre,
+.gk-markdown table {
+  margin: 0.7em 0;
+}
+.gk-markdown h1,
+.gk-markdown h2,
+.gk-markdown h3,
+.gk-markdown h4 {
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.2em 0 0.5em;
+}
+.gk-markdown h1 { font-size: 1.4em; }
+.gk-markdown h2 { font-size: 1.25em; }
+.gk-markdown h3 { font-size: 1.1em; }
+.gk-markdown h4 { font-size: 1em; }
+.gk-markdown ul,
+.gk-markdown ol {
+  padding-left: 1.4em;
+}
+.gk-markdown ul { list-style: disc; }
+.gk-markdown ol { list-style: decimal; }
+.gk-markdown li { margin: 0.25em 0; }
+.gk-markdown li > ul,
+.gk-markdown li > ol { margin: 0.25em 0; }
+.gk-markdown a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.gk-markdown strong { font-weight: 600; }
+.gk-markdown code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  padding: 0.1em 0.35em;
+}
+.gk-markdown pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.85em 1em;
+  overflow-x: auto;
+}
+.gk-markdown pre code {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-size: 0.85em;
+}
+.gk-markdown blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1em;
+  color: var(--muted);
+}
+.gk-markdown hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 1.4em 0;
+}
+.gk-markdown table {
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  font-size: 0.92em;
+}
+.gk-markdown th,
+.gk-markdown td {
+  border: 1px solid var(--border);
+  padding: 0.4em 0.7em;
+  text-align: left;
+}
+.gk-markdown th {
+  background: var(--surface-2);
+  font-weight: 600;
+}
+
+/* Slim, unobtrusive scrollbars (feels more native than the default chunky ones). */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+  border: 2px solid var(--background);
+}

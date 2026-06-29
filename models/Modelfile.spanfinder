@@ -1,0 +1,14 @@
+# Built with Qwen — praxis/spanfinder-3b is a derivative fine-tune of Qwen2.5-3B-Instruct.
+# Qwen is licensed under the Qwen RESEARCH LICENSE AGREEMENT,
+# Copyright (c) Alibaba Cloud. All Rights Reserved.
+# https://huggingface.co/Qwen/Qwen2.5-3B-Instruct/blob/main/LICENSE
+#
+# Download the GGUF file from HuggingFace before running:
+#   huggingface-cli download praxis-nation/spanfinder-3b spanfinder-3b-q4_k_m.gguf \
+#       --local-dir models/
+# Then build the Ollama model:
+#   ollama create praxis/spanfinder-3b -f models/Modelfile.spanfinder
+
+FROM ./spanfinder-3b-q4_k_m.gguf
+
+PARAMETER temperature 0

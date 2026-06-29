@@ -1,0 +1,12 @@
+# cloak desktop backend (M1)
+# Runs under app/.venv (Python 3.13). The scrub engine itself is NOT a pip dep —
+# it is imported from ../../evals (the `harness` package) at runtime via sys.path,
+# so this backend and the eval harness stay decoupled on the same branch.
+fastapi>=0.115
+uvicorn[standard]>=0.30
+anthropic>=0.40
+openai>=1.40
+requests>=2.31
+
+# dev/test: offline model-shape regression suite (backend/tests, `npm run test:backend`)
+pytest>=8.0
